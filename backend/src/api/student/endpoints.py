@@ -212,7 +212,7 @@ class StudentItem(Resource):
             return failure(str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-@api.route('/status')
+@api.route("/status")
 class StudentsStatusResource(Resource):
     def get(self):
         """
@@ -228,7 +228,7 @@ class StudentsStatusResource(Resource):
             "currently_studying": currently_studying,
             "recently_enrolled": recently_enrolled,
             "about_to_graduate": about_to_graduate,
-            "graduated": graduated
+            "graduated": graduated,
         }
         if res:
             return success(res, total_rows=4)

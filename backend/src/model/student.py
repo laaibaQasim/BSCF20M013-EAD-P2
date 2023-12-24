@@ -7,6 +7,7 @@ from model.base import Base, db
 from model.interest import Interest
 from model.department import Department
 
+
 class Student(Base, db.Model):
     __tablename__ = "student"
 
@@ -121,7 +122,7 @@ class Student(Base, db.Model):
         """
         cls.get_log()
         distribution_query = (
-            db.session.query(Student.city, func.count(Student.city).label('count'))
+            db.session.query(Student.city, func.count(Student.city).label("count"))
             .group_by(Student.city)
             .all()
         )
@@ -141,13 +142,18 @@ class Student(Base, db.Model):
         start_date = end_date - timedelta(days=30)
 
         counts_query = (
-            db.session.query(func.date(Student.created_at).label('date'), func.count().label('count'))
+            db.session.query(
+                func.date(Student.created_at).label("date"), func.count().label("count")
+            )
             .filter(Student.created_at.between(start_date, end_date))
             .group_by(func.date(Student.created_at))
             .all()
         )
 
-        counts = [{'date': date.strftime('%Y-%m-%d'), 'count': count} for date, count in counts_query]
+        counts = [
+            {"date": date.strftime("%Y-%m-%d"), "count": count}
+            for date, count in counts_query
+        ]
         return counts
 
     @classmethod
@@ -160,12 +166,17 @@ class Student(Base, db.Model):
         current_date = datetime.utcnow()
 
         age_distribution_query = (
-            db.session.query(func.floor(func.datediff(current_date, Student.dob) / 365).label('age'), func.count().label('count'))
-            .group_by('age')
+            db.session.query(
+                func.floor(func.datediff(current_date, Student.dob) / 365).label("age"),
+                func.count().label("count"),
+            )
+            .group_by("age")
             .all()
         )
 
-        age_distribution = [{'age': age, 'count': count} for age, count in age_distribution_query]
+        age_distribution = [
+            {"age": age, "count": count} for age, count in age_distribution_query
+        ]
         return age_distribution
 
     @classmethod
@@ -176,11 +187,15 @@ class Student(Base, db.Model):
         :return: List of dictionaries with 'department' and 'count'
         """
         department_distribution = (
-        Student.query.join(Department).with_entities(Department.name, func.count().label('count'))
-        .group_by(Department.name)
-        .all()
-    )
-        return [{"department": department, "count": count} for department, count in department_distribution]
+            Student.query.join(Department)
+            .with_entities(Department.name, func.count().label("count"))
+            .group_by(Department.name)
+            .all()
+        )
+        return [
+            {"department": department, "count": count}
+            for department, count in department_distribution
+        ]
 
     @classmethod
     def calculate_degree_distribution(cls):
@@ -190,11 +205,13 @@ class Student(Base, db.Model):
         :return: List of dictionaries with 'degree' and 'count'
         """
         degree_distribution = (
-            Student.query.with_entities(Student.degree, func.count().label('count'))
+            Student.query.with_entities(Student.degree, func.count().label("count"))
             .group_by(Student.degree)
             .all()
         )
-        return [{"degree": degree, "count": count} for degree, count in degree_distribution]
+        return [
+            {"degree": degree, "count": count} for degree, count in degree_distribution
+        ]
 
     @classmethod
     def calculate_gender_distribution(cls):
@@ -204,11 +221,13 @@ class Student(Base, db.Model):
         :return: List of dictionaries with 'gender' and 'count'
         """
         gender_distribution = (
-            Student.query.with_entities(Student.gender, func.count().label('count'))
+            Student.query.with_entities(Student.gender, func.count().label("count"))
             .group_by(Student.gender)
             .all()
         )
-        return [{"gender": gender, "count": count} for gender, count in gender_distribution]
+        return [
+            {"gender": gender, "count": count} for gender, count in gender_distribution
+        ]
 
     @classmethod
     def get_currently_studying_count(cls):
@@ -217,11 +236,13 @@ class Student(Base, db.Model):
 
         :return: Integer
         """
-        currently_studying_count = Student.query.filter(Student.end_date > datetime.utcnow()).count()
+        currently_studying_count = Student.query.filter(
+            Student.end_date > datetime.utcnow()
+        ).count()
         return currently_studying_count
 
     @classmethod
-    def get_recently_enrolled_count(cls,days=30):
+    def get_recently_enrolled_count(cls, days=30):
         """
         Get the number of students recently enrolled.
 
@@ -229,11 +250,13 @@ class Student(Base, db.Model):
         :return: Integer
         """
         start_date = datetime.utcnow() - timedelta(days=days)
-        recently_enrolled_count = Student.query.filter(Student.start_date >= start_date).count()
+        recently_enrolled_count = Student.query.filter(
+            Student.start_date >= start_date
+        ).count()
         return recently_enrolled_count
 
     @classmethod
-    def get_about_to_graduate_count(cls,days=60):
+    def get_about_to_graduate_count(cls, days=60):
         """
         Get the number of students about to graduate in 60 days.
 
@@ -241,7 +264,9 @@ class Student(Base, db.Model):
         :return: Integer
         """
         end_date = datetime.utcnow() + timedelta(days=days)
-        about_to_graduate_count = Student.query.filter(Student.end_date >= datetime.utcnow(), Student.end_date <= end_date).count()
+        about_to_graduate_count = Student.query.filter(
+            Student.end_date >= datetime.utcnow(), Student.end_date <= end_date
+        ).count()
         return about_to_graduate_count
 
     @classmethod
@@ -253,7 +278,7 @@ class Student(Base, db.Model):
         :return: Integer
         """
         # end_date = datetime.utcnow() - timedelta(days=days)
-        graduated_count = Student.query.filter(Student.end_date < datetime.utcnow()).count()
+        graduated_count = Student.query.filter(
+            Student.end_date < datetime.utcnow()
+        ).count()
         return graduated_count
-
-

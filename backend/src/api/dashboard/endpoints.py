@@ -48,7 +48,7 @@ class BottomInterestsResource(Resource):
             return failure(str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-@api.route('/provincial-distribution')
+@api.route("/provincial-distribution")
 class ProvincialDistributionResource(Resource):
     def get(self):
         """
@@ -63,7 +63,7 @@ class ProvincialDistributionResource(Resource):
             return failure("No data found"), HTTPStatus.NOT_FOUND
 
 
-@api.route('/submission-chart')
+@api.route("/submission-chart")
 class SubmissionChartResource(Resource):
     def get(self):
         """
@@ -77,7 +77,8 @@ class SubmissionChartResource(Resource):
         else:
             return failure("No data found"), HTTPStatus.NOT_FOUND
 
-@api.route('/age-distribution')
+
+@api.route("/age-distribution")
 class AgeDistributionResource(Resource):
     def get(self):
         """
@@ -92,7 +93,7 @@ class AgeDistributionResource(Resource):
             return failure("No data found"), HTTPStatus.NOT_FOUND
 
 
-@api.route('/department-distribution')
+@api.route("/department-distribution")
 class DepartmentDistributionResource(Resource):
     def get(self):
         """
@@ -102,11 +103,15 @@ class DepartmentDistributionResource(Resource):
         """
         department_distribution = Student.calculate_department_distribution()
         if department_distribution:
-            return success(department_distribution, len(department_distribution)), HTTPStatus.OK
+            return (
+                success(department_distribution, len(department_distribution)),
+                HTTPStatus.OK,
+            )
         else:
             return failure("No data found"), HTTPStatus.NOT_FOUND
 
-@api.route('/degree-distribution')
+
+@api.route("/degree-distribution")
 class DegreeDistributionResource(Resource):
     def get(self):
         """
@@ -121,7 +126,7 @@ class DegreeDistributionResource(Resource):
             return failure("No data found"), HTTPStatus.NOT_FOUND
 
 
-@api.route('/gender-distribution')
+@api.route("/gender-distribution")
 class GenderDistributionResource(Resource):
     def get(self):
         """
@@ -136,7 +141,7 @@ class GenderDistributionResource(Resource):
             return failure("No data found"), HTTPStatus.NOT_FOUND
 
 
-@api.route('/last_30_days_activity')
+@api.route("/last_30_days_activity")
 class Last30DaysActivityResource(Resource):
     def get(self):
         """
@@ -151,7 +156,7 @@ class Last30DaysActivityResource(Resource):
             return failure("No data found"), HTTPStatus.NOT_FOUND
 
 
-@api.route('/last_24_hours_activity')
+@api.route("/last_24_hours_activity")
 class Last24HoursActivityResource(Resource):
     def get(self):
         """
@@ -161,5 +166,22 @@ class Last24HoursActivityResource(Resource):
         data = UserActivity.calculate_last_24_hours_activity()
         if data:
             return success(data, len(data)), HTTPStatus.OK
+        else:
+            return failure("No data found"), HTTPStatus.NOT_FOUND
+
+
+@api.route("/active-hours")
+class MostActiveHoursResource(Resource):
+    def get(self):
+        most_active_hours = UserActivity.get_most_active_hours()
+        least_active_hours = UserActivity.get_least_active_hours()
+        dead_hours = UserActivity.get_dead_hours()
+        res = {
+            "Most Active Hours": most_active_hours,
+            "Least Active Hours": least_active_hours,
+            "Dead Hours": dead_hours,
+        }
+        if most_active_hours:
+            return success(res, len(res)), HTTPStatus.OK
         else:
             return failure("No data found"), HTTPStatus.NOT_FOUND

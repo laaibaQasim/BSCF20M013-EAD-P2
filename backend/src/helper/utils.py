@@ -10,4 +10,3 @@ def create_activity(action, details):
     user_activity.action = action
     user_activity.details = details
     user_activity.insert()
-
