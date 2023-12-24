@@ -1,7 +1,8 @@
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, func, text
 from datetime import datetime, timedelta
-from sqlalchemy.orm import relationship
-from model.base import db, Base
+
+from model.base import Base, db
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, func, text
+from sqlalchemy.orm import aliased, relationship
 
 
 class UserActivity(Base, db.Model):
@@ -78,21 +79,17 @@ class UserActivity(Base, db.Model):
     @classmethod
     def get_most_active_hours(cls, limit=5):
         """
-        Get the top N hours with the most activity in the last 30 days.
+        Get the most active hours in the last 30 days.
 
-        :param limit: Number of top hours to retrieve
+        :param limit: Number of hours to retrieve (default: 5)
         :return: List of dictionaries with 'hour' and 'count'
         """
-        end_date = datetime.utcnow()
-        start_date = end_date - timedelta(days=30)
         active_hours = (
             db.session.query(
-                func.HOUR(UserActivity.created_at).label("hour"),
-                func.count().label("count"),
+                func.HOUR(cls.created_at).label("hour"), func.count().label("count")
             )
-            .join(UserActivity, UserActivity.user_id == cls.user_id)
-            .filter(UserActivity.created_at >= start_date)
-            .group_by(func.HOUR(UserActivity.created_at))
+            .filter(cls.created_at >= datetime.utcnow() - timedelta(days=30))
+            .group_by(func.HOUR(cls.created_at))
             .order_by(func.count().desc())
             .limit(limit)
             .all()
@@ -110,13 +107,12 @@ class UserActivity(Base, db.Model):
         """
         least_active_hours = (
             db.session.query(
-                func.HOUR(UserActivity.created_at).label("hour"),
+                func.HOUR(cls.created_at).label("hour"),
                 func.count().label("count"),
             )
-            .join(UserActivity, UserActivity.user_id == cls.user_id)
-            .filter(UserActivity.created_at >= cls.get_start_date_30_days_ago())
-            .group_by(func.HOUR(UserActivity.created_at))
-            .order_by(func.count())
+            .filter(cls.created_at >= datetime.utcnow() - timedelta(days=30))
+            .group_by(func.HOUR(cls.created_at))
+            .order_by(func.count().asc())
             .limit(limit)
             .all()
         )
@@ -124,25 +120,22 @@ class UserActivity(Base, db.Model):
         return [{"hour": hour, "count": count} for hour, count in least_active_hours]
 
     @classmethod
-    def get_dead_hours(cls):
+    def get_dead_hours(cls, limit=5):
         """
         Get hours with next to zero activity in the last 30 days.
 
         :return: List of hours with next to zero activity
         """
-        # Define your criteria for dead hours (e.g., count < threshold)
-        threshold = 1
-
-        dead_hours = (
-            db.session.query(
-                func.HOUR(UserActivity.created_at).label("hour"),
-                func.count().label("count"),
-            )
-            .join(UserActivity, UserActivity.user_id == cls.user_id)
-            .filter(UserActivity.created_at >= cls.get_start_date_30_days_ago())
-            .group_by(func.HOUR(UserActivity.created_at))
-            .having(func.count() <= threshold)
+        all_hours = set(range(24))
+        active_hours = (
+            db.session.query(func.HOUR(cls.created_at).label("hour"))
+            .filter(cls.created_at >= datetime.utcnow() - timedelta(days=30))
+            .group_by(func.HOUR(cls.created_at))
             .all()
         )
 
-        return [hour for hour, count in dead_hours]
+        active_hours = set(hour[0] for hour in active_hours)
+
+        dead_hours = list(all_hours - active_hours)[1 : limit + 1]
+
+        return dead_hours

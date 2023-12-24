@@ -1,14 +1,12 @@
-from flask import request, jsonify
-from flask_restx import Resource
 from http import HTTPStatus
 
 from api.login import schemas
-
-from helper.response import success, failure
-
 from auth.authentication import authenticate
-
 from common.context import CurrentUser
+from flask import jsonify, request
+from flask_restx import Resource
+from helper.response import failure, success
+from model.user import User
 
 from . import api
 
@@ -22,12 +20,14 @@ class LoginResource(Resource):
         email = data.get("email")
         password = data.get("password")
 
-        user = authenticate(email, password)
+        user, exist = authenticate(email, password)
 
-        if user:
-            return success(user, total_rows=1)
-        else:
+        if user and exist:
+            return success(user, total_rows=1), HTTPStatus.OK
+        elif user and not exist:
             return failure("User not found"), HTTPStatus.NOT_FOUND
+        else:
+            return failure("Invalid Credentials"), HTTPStatus.UNAUTHORIZED
 
     @api.marshal_with(schemas.user_response, skip_none=True)
     def get(self):

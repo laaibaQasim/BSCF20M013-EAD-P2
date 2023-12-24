@@ -1,24 +1,20 @@
-from flask import Flask
-from flask_cors import CORS
+import random
+from datetime import datetime, timedelta
 
 from api import blueprint
+from common.context import CurrentUser
+from common.enums import Activities, Departments, Roles
+from common.lists import degrees
 from config import settings
+from flask import Flask
+from flask_cors import CORS
 from model.base import db
-
 from model.department import Department
-from model.user import User
 from model.interest import Interest
 from model.role import Role
 from model.student import Student
+from model.user import User
 from model.user_activity import UserActivity
-
-from common.lists import degrees
-from common.enums import Departments, Roles, Activities
-from common.context import CurrentUser
-
-
-import random
-from datetime import datetime, timedelta
 from sqlalchemy.orm import relationship
 
 

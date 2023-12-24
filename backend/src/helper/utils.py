@@ -1,5 +1,5 @@
-from model.user_activity import UserActivity
 from common.context import CurrentUser
+from model.user_activity import UserActivity
 
 
 def create_activity(action, details):

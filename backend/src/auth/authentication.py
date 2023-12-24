@@ -7,6 +7,8 @@ def authenticate(email, password):
 
     if user and user.password == password:
         CurrentUser.set_current_user(user)
-        return user
+        return user, True
+    elif user.password != password:
+        return user, False
 
-    return None
+    return None, False

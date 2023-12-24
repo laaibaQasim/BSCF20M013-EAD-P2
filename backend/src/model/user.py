@@ -1,8 +1,8 @@
-from sqlalchemy import Column, String, Integer, Date, ForeignKey
-from sqlalchemy.orm import relationship
-from helper.utils import create_activity
 from common.enums import Activities
+from helper.utils import create_activity
 from model.base import Base, db
+from sqlalchemy import Column, Date, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 
 class User(Base, db.Model):

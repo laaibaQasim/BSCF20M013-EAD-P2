@@ -1,11 +1,12 @@
-from sqlalchemy import Column, String, Integer, Date, ForeignKey, func
 from datetime import datetime, timedelta
-from sqlalchemy.orm import relationship
-from helper.utils import create_activity
+
 from common.enums import Activities
+from helper.utils import create_activity
 from model.base import Base, db
-from model.interest import Interest
 from model.department import Department
+from model.interest import Interest
+from sqlalchemy import Column, Date, ForeignKey, Integer, String, func
+from sqlalchemy.orm import relationship
 
 
 class Student(Base, db.Model):
@@ -120,7 +121,6 @@ class Student(Base, db.Model):
 
         :return: Dictionary with provincial distribution
         """
-        cls.get_log()
         distribution_query = (
             db.session.query(Student.city, func.count(Student.city).label("count"))
             .group_by(Student.city)
@@ -137,7 +137,6 @@ class Student(Base, db.Model):
 
         :return: List of dictionaries with 'date' and 'count'
         """
-        cls.get_log()
         end_date = datetime.utcnow()
         start_date = end_date - timedelta(days=30)
 

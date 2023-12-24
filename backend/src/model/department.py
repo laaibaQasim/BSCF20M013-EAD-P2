@@ -1,14 +1,13 @@
-from sqlalchemy import Column, String, Integer
-from sqlalchemy.orm import relationship
-from helper.utils import create_activity
 from common.enums import Activities
+from helper.utils import create_activity
 from model.base import Base, db
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 
 class Department(Base, db.Model):
     __tablename__ = "department"
 
-    id = Column(Integer, primary_key=True)
     name = Column(String(50), nullable=False)
 
     # Define the back reference to Student

@@ -1,13 +1,12 @@
-from flask import request, jsonify
-from flask_restx import Resource
 from http import HTTPStatus
 
 from api.dashboard import schemas
+from flask import jsonify, request
+from flask_restx import Resource
+from helper.response import failure, success
 from model.interest import Interest
 from model.student import Student
 from model.user_activity import UserActivity
-
-from helper.response import success, failure
 
 from . import api
 
@@ -171,8 +170,12 @@ class Last24HoursActivityResource(Resource):
 
 
 @api.route("/active-hours")
-class MostActiveHoursResource(Resource):
+class ActiveHoursResource(Resource):
     def get(self):
+        """
+        Get the Most Active Hours, Least Active Hours and Dead Hours of last 30 days.
+        :return: List of Most Active Hours, Most Active Hours and Dead Hours.
+        """
         most_active_hours = UserActivity.get_most_active_hours()
         least_active_hours = UserActivity.get_least_active_hours()
         dead_hours = UserActivity.get_dead_hours()

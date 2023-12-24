@@ -1,4 +1,5 @@
 from functools import wraps
+
 from common.context import CurrentUser
 from common.enums import Roles
 from flask import jsonify

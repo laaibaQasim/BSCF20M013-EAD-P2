@@ -1,4 +1,4 @@
-from flask_restx.fields import Integer, List, Nested, String, Date
+from flask_restx.fields import Date, Integer, List, Nested, String
 
 from . import api
 
