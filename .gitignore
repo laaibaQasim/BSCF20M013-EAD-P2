@@ -1,0 +1,19 @@
+# Virtual environment
+env/
+
+# Byte-compiled files
+__pycache__/
+
+# Environment variables file
+.env
+
+# IDE files
+.vscode/
+.idea/
+
+# Configuration files
+etc/
+
+# frontned
+frontned/
+
