@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './login.css'
@@ -17,7 +17,10 @@ const LoginPage = () => {
 
       // Assuming the API returns a success status code (e.g., 200)
       if (response.status === 200) {
-        // Redirect to the home page or perform any other action on successful login
+          await axios.post('http://127.0.0.1:5000/log', {
+            action: "login",
+            details: "User logged into the system",
+          });
         navigate('/studentList');
       } else {
         setError('Invalid Credentials');

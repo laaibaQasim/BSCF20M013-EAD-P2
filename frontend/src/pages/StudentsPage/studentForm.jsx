@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
@@ -26,6 +26,19 @@ const StudentForm = () => {
 
   const { id } = useParams();
   const isUpdateMode = id !== undefined;
+  const navigate = useNavigate();
+
+  useEffect(()=>
+  {
+    logActivity("navigate", "User nagiated to /studentList/view");
+  },[]);
+
+  const logActivity = async (action, details) => {
+    await axios.post('http://127.0.0.1:5000/log', {
+      action,
+      details,
+    });
+  };
 
   useEffect(() => {
     // Fetch cities, interests, departments, and degrees from the backend API
@@ -105,6 +118,7 @@ const StudentForm = () => {
     } catch (error) {
       console.error('Error updating/inserting student:', error);
     }
+    navigate('/studentList')
   };
 
   return (

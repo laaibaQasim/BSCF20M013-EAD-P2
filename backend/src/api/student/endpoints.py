@@ -1,5 +1,5 @@
 from http import HTTPStatus
-
+from sqlalchemy import text
 from api.student import schemas
 from common.decorators import requires_role
 from common.enums import Roles
@@ -18,20 +18,42 @@ from . import api
 
 @api.route("")
 class StudentList(Resource):
+
     @api.marshal_with(schemas.student_response, skip_none=True)
     def get(self):
         # Pagination parameters
         page = int(request.args.get("page", 1))
         page_size = int(request.args.get("page_size", 10))
 
-        # Query students based on pagination
-        students_paginated = Student.query.paginate(
-            page=page, per_page=page_size, error_out=False
-        )
-        # Extract required data from paginated result
-        students_list = students_paginated.items
+        # Sorting parameters
+        sort_column = request.args.get("sort", "id")
+        sort_direction = request.args.get("direction", "asc")
 
-        return success(students_list, total_rows=students_paginated.total)
+        # Map the sort_column to actual table and column names
+        column_mapping = {
+            "id": Student.id,
+            "user.name": User.name,
+            "department.name": Department.name,
+            "interest.name": Interest.name,
+        }
+
+        # Determine the column to sort based on the mapping
+        sort_column_mapped = column_mapping.get(sort_column, Student.id)
+
+        # Query students based on pagination and sorting
+        students_query = (
+            Student.query
+            .join(User)
+            .join(Department)
+            .join(Interest)
+            .order_by(text(f"{sort_column_mapped} {sort_direction}"))
+            .paginate(page=page, per_page=page_size, error_out=False)
+        )
+
+        # Extract required data from paginated result
+        students_list = students_query.items
+
+        return success(students_list, total_rows=students_query.total)
 
     @api.expect(schemas.student_model, validate=True)
     @requires_role("admin")

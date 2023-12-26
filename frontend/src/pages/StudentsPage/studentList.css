@@ -72,3 +72,7 @@ td button {
   .btn-pages .btn{
     margin-right: 2px;
   }
+
+  th {
+    cursor: pointer;
+  }

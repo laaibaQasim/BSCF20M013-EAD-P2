@@ -35,6 +35,18 @@ const Dashboard = () => {
   const genderDataRef = useRef(null);
   const genderDataInstance = useRef(null);
 
+  useEffect(()=>
+  {
+    logActivity("navigate", "User nagiated to /dashboard");
+  },[]);
+
+  const logActivity = async (action, details) => {
+    await axios.post('http://127.0.0.1:5000/log', {
+      action,
+      details,
+    });
+  };
+
   useEffect(() => {
     const fetchTopInterests = async () => {
       try {
@@ -472,6 +484,7 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     try {
+      logActivity("logout", "User logged out of the system")
       await axios.post('http://127.0.0.1:5000/logout');
       console.log('Logout successful');
 
@@ -480,18 +493,27 @@ const Dashboard = () => {
       console.error('Error during logout:', error);
     }
   };
-
+  const handleAdd = async () => {
+    const response = await axios.get('http://127.0.0.1:5000/login')
+    const userRole = response.data.object;
+    if (userRole === "admin"){
+      navigate('/studentList/add');
+    }
+  else {
+    alert('You are not authorized to perform this action.');
+  }
+  };
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" >
       <h2 className="mb-4">Student Interest System</h2>
       <div className="topbar-div">
         <Link to="/studentList" className="topbar">
           Student List
         </Link>
         |
-        <Link to="/studentList/add" className="topbar">
+        <span className="topbar" onClick={handleAdd}>
           Add Student
-        </Link>
+        </span>
         |
         <span className="topbar" onClick={handleLogout}>
           Logout
@@ -533,7 +555,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
         {/* Col 2 */}
         <div className="col-md-6">
           <div className="card">
@@ -546,7 +567,6 @@ const Dashboard = () => {
       </div>
 
       {/* row 2 */}
-      {/* Dashboard Rows */}
       <div className="row mb-4">
         {/* Col 1 */}
         <div className="col-md-4">
@@ -557,7 +577,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
         {/* Col 2 */}
         <div className="col-md-4">
           <div className="card">
@@ -567,7 +586,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
         {/* Col 3 */}
         <div className="col-md-4">
           <div className="card">
@@ -590,7 +608,6 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-
               {/* Col 2 */}
               <div className="col-md-3">
                 <div className="card">
@@ -600,7 +617,6 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-
               {/* Col 3 */}
               <div className="col-md-3">
                 <div className="card">
@@ -610,8 +626,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Col 4 - Add more cols as needed */}
+              {/* Col 4 */}
               <div className="col-md-3">
                 <div className="card">
                   <div className="card-body">
@@ -624,7 +639,6 @@ const Dashboard = () => {
 
       {/* row 4 */}
       <div className="row mb-4">
-
         {/* Col 1 */}
         <div className="col-md-6">
           <div className="card">
@@ -641,7 +655,6 @@ const Dashboard = () => {
             </div>
             </div>
         </div>
-
         {/* Col 2 */}
         <div className="col-md-4">
           <div className="card">
