@@ -1,0 +1,48 @@
+.interest-container {
+    display: flex;
+    gap: 10px; /* Adjust the gap between interests as needed */
+  }
+  
+  .interest-card {
+    border: 1px solid #ddd; /* Border color */
+    padding: 10px;
+  }
+  
+  .boundary {
+    overflow-x: auto;
+  }
+  .count-text {
+    font-size: 40px;
+    text-align: center;
+  }
+
+  .topbar-div {
+    margin-bottom: 13px;
+    background-color: rgb(228, 228, 228);
+    padding: 15px;
+  }
+  .topbar {
+    color: black;
+    padding: 25px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .grid-container {
+    display: flex;
+    border-bottom: 1px solid #ccc; /* Border below the entire grid */
+  }
+  
+  .grid-item {
+    padding: 10px;
+    text-align: center;
+    border-right: 1px solid #ccc; /* Border between each item */
+  }
+  
+  .grid-item:last-child {
+    border-right: none; /* Remove border for the last item */
+  }
+  
+  .grid-item h5 {
+    margin-bottom: 5px;
+  }

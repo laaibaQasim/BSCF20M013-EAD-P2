@@ -1,0 +1,47 @@
+.form-container {
+    flex-direction: column;
+    max-height: 70%;
+    max-width: 50%;
+    margin-top: 10%;
+    margin-left: 25%;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 6px; 
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+  
+  .form-field {
+    flex: 1;
+  }
+  
+  label {
+    margin-bottom: 8px;
+    display: block;
+    margin-right: 10px;
+  }
+  
+  input,
+  select {
+    margin-bottom: 16px;
+    padding: 2px;
+    width: 50%;
+  }
+  
+  .confirm-button {
+    background-color: #4caf50;
+    border-radius: 5px;
+    border-color: aliceblue;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .confirm-button:hover {
+    background-color: #45a049;
+  }
+  
+  .other-field {
+    margin-top: 10px ;
+  }

@@ -1,0 +1,74 @@
+td button {
+    margin-right: 8px;
+  }
+  
+  /* Style for the "View" button */
+  .btn-view {
+    background-color: #007bff; /* Blue color */
+    color: #fff; /* White text */
+  }
+  
+  .btn-view:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  /* Style for the "Update" button */
+  .btn-update {
+    background-color: #28a745; /* Green color */
+    color: #fff; /* White text */
+  }
+  
+  .btn-update:hover {
+    background-color: #218838; /* Darker green on hover */
+  }
+  
+  /* Style for the "Delete" button */
+  .btn-delete {
+    background-color: #dc3545; /* Red color */
+    color: #fff; /* White text */
+  }
+  
+  .btn-delete:hover {
+    background-color: #c82333; /* Darker red on hover */
+  }
+  
+  .btn-delete,
+  .btn-update,
+  .btn-view {
+    border-radius: 6px;
+    padding: 10px;
+    border-color: aliceblue;
+  }
+  .topbar-div {
+    margin-bottom: 13px;
+    background-color: rgb(228, 228, 228);
+    padding: 15px;
+  }
+  .topbar {
+    color: black;
+    padding: 25px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .page-container {
+    position: relative;
+  }
+  
+  .page-div {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 10px;
+  }
+  
+  .form-control {
+    width: 50px;
+  }
+  
+  .btn-pages {
+    margin-bottom: 20px;
+  }
+  .btn-pages .btn{
+    margin-right: 2px;
+  }

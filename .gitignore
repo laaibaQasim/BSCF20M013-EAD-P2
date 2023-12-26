@@ -14,3 +14,4 @@ __pycache__/
 # Configuration files
 etc/
 
+node_modules/

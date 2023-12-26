@@ -1,0 +1,38 @@
+.container {
+    margin-top: 10%;
+    margin-left: 20%;
+  }
+  
+  .form-container {
+    border: 1px solid rgb(19, 56, 109);
+    border-radius: 10px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .form-heading {
+    text-align: center;
+    color: rgb(19, 56, 109);
+  }
+  
+  .form-label {
+    font-weight: 500;
+  }
+  
+  .btn-login {
+    border-radius: 9px;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: rgb(19, 56, 109);
+    color: #fff;
+  }
+  
+  .btn-login:hover {
+    background-color: rgb(10, 31, 61);
+  }
+  
+  .title-sis p{
+    font-size: 100px;
+  }
