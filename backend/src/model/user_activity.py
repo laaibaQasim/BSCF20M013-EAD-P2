@@ -73,7 +73,6 @@ class UserActivity(Base, db.Model):
             )
             .all()
         )
-
         return [{"time": str(time), "count": count} for time, count in hourly_activity]
 
     @classmethod

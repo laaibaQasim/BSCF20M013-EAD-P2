@@ -6,6 +6,7 @@ from .department.endpoints import api as department_api
 from .interest.endpoints import api as interest_api
 from .login.endpoints import api as login_api
 from .student.endpoints import api as student_api
+from .logout.endpoints import api as logout_api
 
 blueprint = Blueprint("api", __name__)
 
@@ -32,3 +33,4 @@ api.add_namespace(student_api)
 api.add_namespace(department_api)
 api.add_namespace(interest_api)
 api.add_namespace(dashboard_api)
+api.add_namespace(logout_api)

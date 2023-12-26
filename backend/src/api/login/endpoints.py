@@ -13,8 +13,8 @@ from . import api
 
 @api.route("")
 class LoginResource(Resource):
-    @api.expect(schemas.user_model, validate=True)
-    @api.marshal_with(schemas.user_response, skip_none=True)
+    @api.expect(schemas.login_model, validate=True)
+    @api.marshal_with(schemas.login_response, skip_none=True)
     def post(self):
         data = request.get_json()
         email = data.get("email")
@@ -29,10 +29,9 @@ class LoginResource(Resource):
         else:
             return failure("Invalid Credentials"), HTTPStatus.UNAUTHORIZED
 
-    @api.marshal_with(schemas.user_response, skip_none=True)
     def get(self):
         cuser = CurrentUser.cuser
         if cuser:
-            return success(cuser, total_rows=1)
+            return success(CurrentUser.role_name, total_rows=1), HTTPStatus.OK
         else:
-            return failure("User not found"), HTTPStatus.NOT_FOUND
+            return failure("You are not Logged In."), HTTPStatus.NOT_FOUND

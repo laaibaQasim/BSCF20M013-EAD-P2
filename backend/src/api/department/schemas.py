@@ -1,11 +1,9 @@
 from flask_restx.fields import Integer, List, Nested, String
-
 from . import api
 
 department_model = api.model(
     "department_model",
     {
-        "ID": Integer(required=True, description="Department ID"),
         "name": String(required=True, description="Department name"),
     },
     strict=True,

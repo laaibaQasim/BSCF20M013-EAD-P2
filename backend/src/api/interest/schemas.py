@@ -5,7 +5,6 @@ from . import api
 interest_model = api.model(
     "interest_model",
     {
-        "ID": Integer(required=True, description="Interest ID"),
         "name": String(required=True, description="Interest name"),
     },
     strict=True,

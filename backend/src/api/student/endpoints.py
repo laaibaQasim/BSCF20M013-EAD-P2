@@ -28,15 +28,15 @@ class StudentList(Resource):
         students_paginated = Student.query.paginate(
             page=page, per_page=page_size, error_out=False
         )
-
         # Extract required data from paginated result
         students_list = students_paginated.items
+
         return success(students_list, total_rows=students_paginated.total)
 
     @api.expect(schemas.student_model, validate=True)
     @requires_role("admin")
     @api.marshal_with(schemas.student_response, skip_none=True)
-    def put(self):
+    def post(self):
         try:
             data = request.get_json()
 
@@ -45,14 +45,17 @@ class StudentList(Resource):
             if degree_name not in degrees:
                 return failure("Degree not found"), HTTPStatus.NOT_FOUND
 
-            # Check if the department exists.
-            department_name = data.get("department")
+             # Check if the department exists.
+            department_data = data.get("department", {})
+            department_name = department_data.get('name', '') 
             department = Department.get_by_name(department_name)
             if not department:
                 return failure("Department not found"), HTTPStatus.NOT_FOUND
 
-            # Check if the interest already exists, if not, add it
-            interest_name = data.get("interest")
+
+             # Check if the interest already exists, if not, add it
+            interest_data = data.get("interest", {})
+            interest_name = interest_data.get('name')
             interest = Interest.get_by_name(interest_name)
             if not interest:
                 interest = Interest(name=interest_name)
@@ -60,28 +63,30 @@ class StudentList(Resource):
             else:
                 new_interest = interest
 
-            # Construct the student data with department and interest IDs
             std_role = Role.get_role_by_name(Roles.STUDENT)
-            new_user = User(
-                name=data.get("name"),
-                email=data.get("email"),
-                password="pucit",
-                role=std_role,
-            )
+            user_data = data.get("user", {})
+            to_add = {
+                "name":user_data.get("name"),
+                "email":user_data.get("email"),
+                "role" :std_role,
+            }
 
-            new_student = Student(
-                user=new_user,
-                roll_number=data.get("roll_number"),
-                department=department,
-                interest=new_interest,
-                degree=data.get("degree"),
-                dob=data.get("dob"),
-                city=data.get("city"),
-                gender=data.get("gender"),
-                start_date=data.get("start_date"),
-                end_date=data.get("end_date"),
-            )
-            new_student.insert()
+            # Construct the student data with department and interest IDs
+            added_user = User(**to_add).insert()
+
+            to_add_std = {
+                "user": added_user,
+                "roll_number": data.get("roll_number"),
+                "department" : department,
+                "interest" : new_interest,
+                "degree" : data.get("degree"),
+                "dob":data.get("dob"),
+                "city":data.get("city"),
+                "gender":data.get("gender"),
+                "start_date":data.get("start_date"),
+                "end_date":data.get("end_date"),
+            }
+            Student(**to_add_std).insert()
 
             # Return success response
             return (
@@ -121,7 +126,6 @@ class StudentItem(Resource):
     @api.marshal_with(schemas.student_response, skip_none=True)
     def patch(self, student_id):
         try:
-            # Parse student data from the request
             data = request.get_json()
 
             # Check if the degree exists
@@ -129,18 +133,25 @@ class StudentItem(Resource):
             if degree_name not in degrees:
                 return failure("Degree not found"), HTTPStatus.NOT_FOUND
 
-            user_to_update = User.get_by_id(student_id)
-            if not user_to_update:
-                return failure("Student not found"), HTTPStatus.NOT_FOUND
-
             # Check if the department exists.
-            department_name = data.get("department")
+            department_data = data.get("department", {})
+            department_name = department_data.get('name', '') 
             department = Department.get_by_name(department_name)
             if not department:
                 return failure("Department not found"), HTTPStatus.NOT_FOUND
 
+            user_data = data.get("user", {})
+            user = User.query.get(student_id)
+            to_update_user = {
+                "name" : user_data.get('name'),
+                "email" : user_data.get('email'),
+            }
+            if user:
+                user.update(student_id, user_data)
+
             # Check if the interest already exists, if not, add it
-            interest_name = data.get("interest")
+            interest_data = data.get("interest", {})
+            interest_name = interest_data.get('name')
             interest = Interest.get_by_name(interest_name)
             if not interest:
                 interest = Interest(name=interest_name)
@@ -148,7 +159,8 @@ class StudentItem(Resource):
             else:
                 new_interest = interest
 
-            to_update = {
+            student_data = data.get("student", {})
+            to_update_student = {
                 "roll_number": data.get("roll_number"),
                 "degree": data.get("degree"),
                 "dob": data.get("dob"),
@@ -159,8 +171,7 @@ class StudentItem(Resource):
                 "department_id": department.id,
                 "interest_id": new_interest.id,
             }
-
-            Student.update(student_id, to_update)
+            Student.update(student_id, to_update_student)
 
             # Return success response
             return (
@@ -193,3 +204,16 @@ class StudentsStatusResource(Resource):
             return success(res, total_rows=4)
         else:
             return failure("No Data Found."), HTTPStatus.NOT_FOUND
+
+
+@api.route("/degrees")
+class StudentDegreeResource(Resource):
+    def get(self):
+        return success(degrees, total_rows=len(degrees)), HTTPStatus.OK
+
+@api.route("/cities")
+class StudentDegreeResource(Resource):
+    def get(self):
+        cities = Student.query.distinct(Student.city).all()
+        city_names = list(set([city.city for city in cities]))
+        return success(city_names, total_rows=len(city_names)), HTTPStatus.OK
